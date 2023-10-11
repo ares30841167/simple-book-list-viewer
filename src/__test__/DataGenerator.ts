@@ -34,3 +34,13 @@ export function duplicateItemArrayGenerator(item: BookInfo, amount: number) {
 
     return arr;
 }
+
+export function repeatArrayGenerator(array: BookInfo[], times: number) {
+    let arr: BookInfo[] = [];
+
+    for(var i = 0; i < times; ++i) {
+        arr = arr.concat(array);
+    }
+
+    return arr;
+}
