@@ -8,6 +8,9 @@ export function mockedSetter(mockedClass: Record<string, any>, targetVariableNam
     });
 
     Object.defineProperty(mockedClass, targetVariableName, {
+        get: () => {
+            return mockedClass._mockVar;
+        },
         set: mockedSetter,
         configurable: true,
     });
