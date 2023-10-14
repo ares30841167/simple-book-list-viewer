@@ -1,35 +1,9 @@
 import { mockedSetter } from '../__test__/MockSetter'
-import { MaskedBookInfo } from '../__test__/ExpectingData'
-import { largeTestingDataGenerator, duplicateItemArrayGenerator, repeatArrayGenerator } from '../__test__/DataGenerator'
+import { duplicateItemArrayGenerator } from '../__test__/DataGenerator'
 import { WordPuritySystem } from './WordPuritySystem'
 import { WordPurityService } from '@externals/word-purity'
-import { TestBookInfo } from '../__test__/TestingData'
 
-jest.mock('@externals/word-purity', () => {
-    return {
-        WordPurityService: jest.fn().mockImplementation(() => {
-            return {
-                words: jest.fn(),
-                constructor: jest.fn(),
-                addWord: jest.fn(),
-                purity: jest.fn().mockImplementation((str: string, purityWords: string[] = [
-                    "Copperfield",
-                    "Wonderland"
-                ]) => {
-                    let maskedString = str;
-
-                    purityWords.forEach(keyword => {
-                        const regex = new RegExp(keyword, "gi");
-                        const mask = '*'.repeat(keyword.length);
-                        maskedString = maskedString.replace(regex, mask);
-                    });
-
-                    return maskedString;
-                })
-            };
-        })
-    };
-});
+jest.mock('@externals/word-purity');
 
 describe("WordPuritySystem class", () => {
     beforeEach(() => {
@@ -47,7 +21,7 @@ describe("WordPuritySystem class", () => {
         wordPuritySystem.constructor(mockWordPurityServiceInstance);
 
         expect(wordPuritySystem._mockVar).toBe(mockWordPurityServiceInstance);
-        expect(mockWordPurityServiceInstance.addWord).toHaveBeenCalledWith(dufaultPurityWords);
+        expect(mockWordPurityServiceInstance.addWord).toBeCalledWith(dufaultPurityWords);
     });
 
     test("Should set the disable to true", () => {
@@ -70,149 +44,49 @@ describe("WordPuritySystem class", () => {
 
     test("Should return a masked TestBookInfo list", async () => {
         const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
+        const testBookInfo = [{
+            "ISBN": "680-71-48243-17-0",
+            "title": "Alice Adventures in Wonderland",
+            "author": "Stephenie Meyer"
+        }];
+        const expectedResult = [{
+            "ISBN": "680-71-48243-17-0",
+            "title": "Alice Adventures in **********",
+            "author": "Stephenie Meyer"
+        }];
 
-        await wordPuritySystem.process(TestBookInfo);
+        let purityItemsSpy = jest.spyOn(mockWordPurityServiceInstance, 'purity').mockReturnValue("Alice Adventures in **********");
 
-        const result = wordPuritySystem.getItems();
+        const wordPuritySystem = mockedSetter(new WordPuritySystem(mockWordPurityServiceInstance), 'items');
 
-        expect(result).toStrictEqual(MaskedBookInfo);
+        await wordPuritySystem.process(testBookInfo);
+
+        expect(purityItemsSpy).toBeCalledWith("Alice Adventures in Wonderland");
+        expect(wordPuritySystem._mockVar).toStrictEqual(expectedResult);
     });
 
     test("Should return a masked BookInfo list (large BookInfo list)", async () => {
         const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const largeBookInfo = largeTestingDataGenerator();
-        const expectedResult = repeatArrayGenerator(MaskedBookInfo, 500);
-
-        await wordPuritySystem.process(largeBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(expectedResult);
-    });
-
-    test("Should return a masked BookInfo list (duplicate BookInfo list)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const duplicateBookInfo = duplicateItemArrayGenerator({
+        const largeBookInfo = duplicateItemArrayGenerator({
             "ISBN": "680-71-48243-17-0",
             "title": "Alice Adventures in Wonderland",
             "author": "Stephenie Meyer"
-        }, 100);
+        }, 100000);
         const expectedResult = duplicateItemArrayGenerator({
             "ISBN": "680-71-48243-17-0",
             "title": "Alice Adventures in **********",
             "author": "Stephenie Meyer"
-        }, 100);
+        }, 100000);
 
-        await wordPuritySystem.process(duplicateBookInfo);
+        let purityItemsSpy = jest.spyOn(mockWordPurityServiceInstance, 'purity').mockReturnValue("Alice Adventures in **********");
 
-        const result = wordPuritySystem.getItems();
+        const wordPuritySystem = mockedSetter(new WordPuritySystem(mockWordPurityServiceInstance), 'items');
 
-        expect(result).toStrictEqual(expectedResult);
-    });
+        await wordPuritySystem.process(largeBookInfo);
 
-    test("Should return a masked BookInfo (one word different from the keyword)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const testBookInfo = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Alice Adventures in Wonderlands",
-            "author": "Stephenie Meyer"
-        }];
-        const expectedResult = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Alice Adventures in **********s",
-            "author": "Stephenie Meyer"
-        }];
-
-        await wordPuritySystem.process(testBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(expectedResult);
-    });
-
-    test("Should return a masked BookInfo (keyword within a word)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const testBookInfo = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Alice Adventures in sWonderlands",
-            "author": "Stephenie Meyer"
-        }];
-        const expectedResult = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Alice Adventures in s**********s",
-            "author": "Stephenie Meyer"
-        }];
-
-        await wordPuritySystem.process(testBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(expectedResult);
-    });
-
-    test("Should return a masked BookInfo (keyword appears two times)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const testBookInfo = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Wonderland Alice Adventures in Wonderland",
-            "author": "Stephenie Meyer"
-        }];
-        const expectedResult = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "********** Alice Adventures in **********",
-            "author": "Stephenie Meyer"
-        }];
-
-        await wordPuritySystem.process(testBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(expectedResult);
-    });
-
-    test("Should return a masked BookInfo (two different keywords in the same time)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const testBookInfo = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "Copperfield Alice Adventures in Wonderland",
-            "author": "Stephenie Meyer"
-        }];
-        const expectedResult = [{
-            "ISBN": "680-71-48243-17-0",
-            "title": "*********** Alice Adventures in **********",
-            "author": "Stephenie Meyer"
-        }];
-
-        await wordPuritySystem.process(testBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(expectedResult);
-    });
-
-    test("Should return the same BookInfo (no keyword)", async () => {
-        const mockWordPurityServiceInstance = new WordPurityService();
-        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
-        const testBookInfo = [
-            {
-                "ISBN": "148-71-77362-42-3",
-                "title": "Game of Thrones II",
-                "author": "J. R. R. Tolkien"
-            }
-        ];
-
-        await wordPuritySystem.process(testBookInfo);
-
-        const result = wordPuritySystem.getItems();
-
-        expect(result).toStrictEqual(testBookInfo);
+        expect(purityItemsSpy).toBeCalledTimes(100000);
+        expect(purityItemsSpy).toBeCalledWith("Alice Adventures in Wonderland");
+        expect(wordPuritySystem._mockVar).toStrictEqual(expectedResult);
     });
 
     test("Should return the same BookInfo (disable)", async () => {
