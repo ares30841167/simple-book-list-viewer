@@ -34,6 +34,22 @@ describe("DataBaseSystem class", () => {
         expect(databaseSystem._mockVar).toBe(mockHashGeneratorInstance);
     });
 
+    test("Should get an empty array from the items", () => {
+        const databaseSystem = new DataBaseSystem();
+
+        const result = databaseSystem.getItems();
+
+        expect(result).toStrictEqual([]);
+    });
+
+    test("Should get a data base update msg from the updateMessage", () => {
+        const databaseSystem = new DataBaseSystem();
+
+        const result = databaseSystem.getUpdateMessage();
+
+        expect(result).toBe("Data Base Update");
+    });
+
     test("Should connect to the db", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
         const testBookInfo = {

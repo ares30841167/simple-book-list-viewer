@@ -3,9 +3,24 @@ import { AscendingBookInfo, DescendingBookInfo } from '../__test__/ExpectingData
 import { duplicateTestingDataGenerator, duplicateItemArrayGenerator, largeTestingDataGenerator } from '../__test__/DataGenerator'
 import { mockedSetter } from '../__test__/MockSetter'
 import { SortSystem } from './SortSystem'
-import { BookInfo } from '@externals/simple-db'
 
 describe("SortSystem class", () => {
+    test("Should get an empty array from the items", () => {
+        const sortSystem = new SortSystem();
+
+        const result = sortSystem.getItems();
+
+        expect(result).toStrictEqual([]);
+    });
+
+    test("Should get a sort update msg from the updateMessage", () => {
+        const sortSystem = new SortSystem();
+
+        const result = sortSystem.getUpdateMessage();
+
+        expect(result).toBe("Sort Update");
+    });
+
     test("Should set the sortType to ASC", () => {
         const sortSystem = mockedSetter(new SortSystem(), 'sortType');
 
