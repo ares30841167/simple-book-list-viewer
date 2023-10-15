@@ -33,6 +33,24 @@ describe("WordPuritySystem class", () => {
         expect(wordPuritySystem._mockVar).toBe(true);
     });
 
+    test("Should get an empty array from the items", () => {
+        const mockWordPurityServiceInstance = new WordPurityService();
+        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
+
+        const result = wordPuritySystem.getItems();
+
+        expect(result).toStrictEqual([]);
+    });
+
+    test("Should get a dom purity update msg from the updateMessage", () => {
+        const mockWordPurityServiceInstance = new WordPurityService();
+        const wordPuritySystem = new WordPuritySystem(mockWordPurityServiceInstance);
+
+        const result = wordPuritySystem.getUpdateMessage();
+
+        expect(result).toBe("Dom Purity Update");
+    });
+
     test("Should get an undefined from the disable", () => {
         const mockWordPurityServiceInstance = new WordPurityService();
         const wordPuritySystem = mockedSetter(new WordPuritySystem(mockWordPurityServiceInstance), 'disable');

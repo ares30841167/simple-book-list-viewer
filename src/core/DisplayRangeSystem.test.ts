@@ -66,6 +66,22 @@ describe("DisplayRangeSystem class", () => {
         expect(() => { displayRangeSystem.setRange(-10, 3) }).toThrowError("Cannot be less than 0");
     });
 
+    test("Should get an empty array from the items", () => {
+        const displayRangeSystem = new DisplayRangeSystem();
+
+        const result = displayRangeSystem.getItems();
+
+        expect(result).toStrictEqual([]);
+    });
+
+    test("Should get a display range update msg from the updateMessage", () => {
+        const displayRangeSystem = new DisplayRangeSystem();
+
+        const result = displayRangeSystem.getUpdateMessage();
+
+        expect(result).toBe("Display Range Update");
+    });
+
     test("Should get 1 from the startRange", () => {
         const displayRangeSystem = new DisplayRangeSystem();
 

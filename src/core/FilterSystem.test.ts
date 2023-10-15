@@ -5,6 +5,22 @@ import { FilterSystem } from './FilterSystem'
 import { BookInfo } from '@externals/simple-db'
 
 describe("FilterSystem class", () => {
+    test("Should get an empty array from the items", () => {
+        const filterSystem = new FilterSystem();
+
+        const result = filterSystem.getItems();
+
+        expect(result).toStrictEqual([]);
+    });
+
+    test("Should get a filter update msg from the updateMessage", () => {
+        const filterSystem = new FilterSystem();
+
+        const result = filterSystem.getUpdateMessage();
+
+        expect(result).toBe("Filter Update");
+    });
+
     test("Should set the filterWord to foo", () => {
         const filterSystem = mockedSetter(new FilterSystem(), 'filterWord');
 
