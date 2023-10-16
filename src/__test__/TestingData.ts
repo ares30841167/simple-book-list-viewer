@@ -42,3 +42,31 @@ export const TestBookInfo: BookInfo[] = [
         "author": "J. R. R. Tolkien"
     },
 ]
+
+export const MockSytemItems = [
+    {
+        "ISBN": "0",
+        "title": "DataBaseSystem items",
+        "author": ""
+    },
+    {
+        "ISBN": "1",
+        "title": "WordPuritySystem items",
+        "author": ""
+    },
+    {
+        "ISBN": "2",
+        "title": "FilterSystem items",
+        "author": ""
+    },
+    {
+        "ISBN": "3",
+        "title": "SortSystem items",
+        "author": ""
+    },
+    {
+        "ISBN": "4",
+        "title": "DisplayRangeSystem items",
+        "author": ""
+    }
+]
