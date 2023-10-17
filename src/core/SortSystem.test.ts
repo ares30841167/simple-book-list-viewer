@@ -86,6 +86,23 @@ describe("SortSystem class", () => {
         expect(result).toStrictEqual(AscendingBookInfo);
     });
 
+    test("Should sort by ascending (partial test oracle)", async () => {
+        const sortSystem = new SortSystem();
+
+        sortSystem.setSortType(SortSystem.ASC);
+
+        await sortSystem.process(TestBookInfo);
+
+        const result = sortSystem.getItems();
+
+        expect(result.length).toBe(8);
+        
+        //partial oracle
+        for(let i = 0; i < result.length - 1; i += 2) {
+            expect(result[i].title < result[i + 1].title);
+        }
+    });
+
     test("Should sort by descending", async () => {
         const sortSystem = new SortSystem();
 
