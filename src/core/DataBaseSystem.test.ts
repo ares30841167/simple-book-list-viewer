@@ -13,6 +13,9 @@ describe("DataBaseSystem class", () => {
         jest.mocked(HashGenerator).mockClear();
     });
 
+    /**
+     * 測試DataBaseSystem是否正確初始化並正常注入依賴物件
+     */ 
     test("Should initialized normally and inject dependencies correctly", () => {
         // init databaseSystem var
         let databaseSystem = undefined;
@@ -34,6 +37,9 @@ describe("DataBaseSystem class", () => {
         expect(databaseSystem._mockVar).toBe(mockHashGeneratorInstance);
     });
 
+    /**
+     * 測試若items為空，DataBaseSystem.getItems是否正確回傳空array
+     */ 
     test("Should get an empty array from the items", () => {
         const databaseSystem = new DataBaseSystem();
 
@@ -42,6 +48,9 @@ describe("DataBaseSystem class", () => {
         expect(result).toStrictEqual([]);
     });
 
+    /**
+     * 測試DataBaseSystem.getUpdateMessage是否回傳正確的字串
+     */ 
     test("Should get a data base update msg from the updateMessage", () => {
         const databaseSystem = new DataBaseSystem();
 
@@ -50,6 +59,9 @@ describe("DataBaseSystem class", () => {
         expect(result).toBe("Data Base Update");
     });
 
+    /**
+     * 測試DataBaseSystem.connectDB內的各連接流程是否正確以對應的參數被呼叫
+     */ 
     test("Should connect to the db", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
         const testBookInfo = {
@@ -71,6 +83,10 @@ describe("DataBaseSystem class", () => {
         expect(res).toBe("success");
     });
 
+    /**
+     * 測試若BookDataBaseService.setUp()發生錯誤，DatabaseSystem應擲出
+     * Cannnot connect to DB錯誤
+     */ 
     test("Should throw a cannnot connect to db error", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
 
@@ -83,6 +99,9 @@ describe("DataBaseSystem class", () => {
         expect(setUpSpy).toBeCalledWith("http://localhost", 4000);
     });
 
+    /**
+     * 測試DataBaseSystem.addBook函式流程是否正確
+     */ 
     test("Should add a BookInfo into the db", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
         const mockHashGeneratorInstance = new HashGenerator();
@@ -103,6 +122,10 @@ describe("DataBaseSystem class", () => {
         expect(addBookSpy).toBeCalledWith(expectedBookInfo);
     });
 
+    /**
+     * 測試若DatabaseSystem.addBook傳入null，DatabaseSystem應發生錯誤並擲出
+     * Add book failed錯誤
+     */ 
     test("Should throw an add book failed error (title or author is null)", async () => {
         const databaseSystem = new DataBaseSystem();
         
@@ -111,6 +134,10 @@ describe("DataBaseSystem class", () => {
         await expect(databaseSystem.addBook("foo", null)).rejects.toThrowError("Add book failed");
     });
 
+    /**
+     * 測試若BookDataBaseService.addBook發生錯誤，DatabaseSystem應擲出
+     * Add book failed錯誤
+     */ 
     test("Should throw an add book failed error (addBook failed)", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
         const mockHashGeneratorInstance = new HashGenerator();
@@ -131,6 +158,9 @@ describe("DataBaseSystem class", () => {
         expect(addBookSpy).toBeCalledWith(expectedBookInfo);
     });
 
+    /**
+     * 測試DataBaseSystem.deleteBook函式流程是否正確
+     */ 
     test("Should delete a BookInfo from the db", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
 
@@ -143,12 +173,20 @@ describe("DataBaseSystem class", () => {
         expect(deleteBookSpy).toBeCalledWith("999-99-99999-99-9");
     });
 
+    /**
+     * 測試DataBaseSystem.deleteBook若傳入錯誤的參數，函式是否擲出
+     * Delete book failed錯誤
+     */ 
     test("Should throw a delete book failed error (bookISBN is null)", async () => {
         const databaseSystem = new DataBaseSystem();
 
         await expect(databaseSystem.deleteBook(null)).rejects.toThrowError("Delete book failed");
     });
 
+    /**
+     * 測試若BookDataBaseService.deleteBook發生錯誤，DatabaseSystem應擲出
+     * Delete book failed錯誤
+     */ 
     test("Should throw a delete book failed error (deleteBook failed)", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
 
@@ -161,6 +199,9 @@ describe("DataBaseSystem class", () => {
         expect(deleteBookSpy).toBeCalledWith("999-99-99999-99-9");
     });
 
+    /**
+     * 測試DataBaseSystem.process函式流程是否正確
+     */ 
     test("Should get all the BookInfo from the db", async () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
 
@@ -174,6 +215,10 @@ describe("DataBaseSystem class", () => {
         expect(databaseSystem._mockVar).toBe(TestBookInfo);
     });
 
+    /**
+     * 測試呼叫DataBaseSystem.process時，若BookDataBaseService.getBooks發生錯誤，
+     * 是否忽略錯誤並繼續正常運行
+     */ 
     test("Should do nothing when catching an error while the process method being called", () => {
         const mockBookDataBaseServiceInstance = new BookDataBaseService();
 

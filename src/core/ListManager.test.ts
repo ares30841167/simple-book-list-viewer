@@ -24,6 +24,10 @@ jest.mock('../utils/HashGenerator');
 jest.mock('@externals/word-purity');
 jest.mock('@externals/simple-db');
 
+/**
+ * getMockSystemsInstance會取得所有jest mock的子系統的實例
+ * @returns 所有system的mock實例
+ */
 function getMockSystemsInstance() {
     const mockDataBaseSystemInstance = jest.mocked(DataBaseSystem).mock.instances[0];
     const mockWordPuritySystemInstance = jest.mocked(WordPuritySystem).mock.instances[0];
@@ -40,6 +44,10 @@ function getMockSystemsInstance() {
     }
 }
 
+/**
+ * getMockSystemItems會取得所有子系統應該含有的items欄位假資料
+ * @returns 所有子系統應該含有的items欄位假資料
+ */
 function getMockSystemItems() {
     return {
         mockDataBaseSystemItems: [MockSytemItems[0]],
@@ -50,6 +58,9 @@ function getMockSystemItems() {
     }
 }
 
+/**
+ * mockGetItemsFunction會將所有子系統下的getItems函式替換為spy
+ */
 function mockGetItemsFunction() {
     const mockSystems = getMockSystemsInstance();
     const mockSystemItems = getMockSystemItems();
@@ -70,6 +81,10 @@ function mockGetItemsFunction() {
         .mockReturnValue(mockSystemItems.mockDisplayRangeSystemItems);
 }
 
+/**
+ * mockGetUpdateMessageFunction會將所有子系統下的getUpdateMessage
+ * 函式替換為spy
+ */
 function mockGetUpdateMessageFunction() {
     const mockSystems = getMockSystemsInstance();
 
@@ -80,6 +95,10 @@ function mockGetUpdateMessageFunction() {
     jest.spyOn(mockSystems.mockDisplayRangeSystem, 'getUpdateMessage').mockReturnValue("Display Range Update");
 }
 
+/**
+ * mockProcessFunction會將所有子系統下的process函式替換為spy
+ * @returns 所有子系統下的mock process函式的spy物件
+ */
 function mockProcessFunction() {
     const mockSystems = getMockSystemsInstance();
 
@@ -112,6 +131,9 @@ describe("ListViewerManager class", () => {
         jest.mocked(BookDataBaseService).mockClear();
     });
 
+    /**
+     * 測試ListViewerManager是否正確Setup
+     */ 
     test("Should setup normally", async () => {
         const listViewerManager = mockedSetter(new ListViewerManager(), 'processors');
 
@@ -130,6 +152,10 @@ describe("ListViewerManager class", () => {
         expect(listViewerManager._mockVar[4]).toBeInstanceOf(DisplayRangeSystem);
     });
 
+    /**
+     * 測試ListViewerManager.updateResult傳入UpdateType.Data，
+     * 是否正確從DataBaseSystem子系統開始Update
+     */ 
     test("Should update result starting from DataBaseSystem", async () => {
         const listViewerManager = mockedSetter(new ListViewerManager(), 'updateMsg');
 
@@ -160,6 +186,10 @@ describe("ListViewerManager class", () => {
         expect(processFunctionSpys.displayRangeSystemProcessSpy).toBeCalledWith(mockSystemItems.mockSortSystemItems);
     });
 
+    /**
+     * 測試ListViewerManager.updateResult傳入非法的UpdateType，
+     * 是否正確的未Update任何子系統
+     */ 
     test("Should not update any result (illegal update type)", async () => {
         const listViewerManager = mockedSetter(new ListViewerManager(), 'updateMsg');
 
@@ -170,6 +200,9 @@ describe("ListViewerManager class", () => {
         expect(listViewerManager._mockVar).toStrictEqual([]);
     });
 
+    /**
+     * 測試ListViewerManager.getUpdateMessage是否回傳正確的字串
+     */ 
     test("Should get an empty array from the updateMsg", () => {
         const listViewerManager = new ListViewerManager();
 
@@ -178,6 +211,10 @@ describe("ListViewerManager class", () => {
         expect(updateMsg).toStrictEqual([]);
     });
 
+    /**
+     * 測試ListViewerManager.getProcessor傳入UpdateType.Data，是否
+     * 正確回傳DataBaseSystem子系統的Instance
+     */ 
     test("Should get a DataBaseSystem instance from the processors", async () => {
         const listViewerManager = new ListViewerManager();
 
@@ -188,6 +225,10 @@ describe("ListViewerManager class", () => {
         expect(processor).toBeInstanceOf(DataBaseSystem);
     });
 
+    /**
+     * 測試ListViewerManager.getProcessor傳入非法的UpdateType，是否
+     * 正確回傳一個undefined作為結果
+     */ 
     test("Should get undefined from the processors (illegal update type)", async () => {
         const listViewerManager = new ListViewerManager();
 
@@ -197,6 +238,10 @@ describe("ListViewerManager class", () => {
         expect(listViewerManager.getProcessor(10 as any)).toBe(undefined);
     });
 
+    /**
+     * 測試ListViewerManager.generateDisplayItemRow是否正確回傳最後一個
+     * 子系統所處理的items
+     */ 
     test("Should get the last BookInfo Item from the processors' chain", async () => {
         const listViewerManager = new ListViewerManager();
 
@@ -217,6 +262,10 @@ describe("ListViewerManager class", () => {
         expect(displayItemRow).toStrictEqual(mockDisplayRangeSystemItems);
     });
 
+    /**
+     * 測試ListViewerManager.updateResult傳入非法的UpdateType (小於0)，
+     * 是否擲出Cannot read properties of undefined錯誤
+     */ 
     test("Should throw a cannot read properties of undefined error (illegal update type)", async () => {
         const listViewerManager = new ListViewerManager();
 

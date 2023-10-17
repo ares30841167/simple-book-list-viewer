@@ -1,5 +1,6 @@
 import { BookInfo } from "@externals/simple-db";
 
+// 以升冪排序的TestBookInfo
 export const AscendingBookInfo: BookInfo[] = [
     {
         "ISBN": "680-71-48243-17-0",
@@ -43,6 +44,7 @@ export const AscendingBookInfo: BookInfo[] = [
     },
 ]
 
+// 以降冪排序的TestBookInfo
 export const DescendingBookInfo: BookInfo[] = [
     {
         "ISBN": "774-13-13326-60-1",

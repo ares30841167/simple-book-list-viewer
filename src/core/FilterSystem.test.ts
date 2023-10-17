@@ -5,6 +5,9 @@ import { FilterSystem } from './FilterSystem'
 import { BookInfo } from '@externals/simple-db'
 
 describe("FilterSystem class", () => {
+    /**
+     * 測試若items為空，FilterSystem.getItems是否正確回傳空array
+     */
     test("Should get an empty array from the items", () => {
         const filterSystem = new FilterSystem();
 
@@ -13,6 +16,9 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual([]);
     });
 
+    /**
+     * 測試FilterSystem.getUpdateMessage是否回傳正確的字串
+     */ 
     test("Should get a filter update msg from the updateMessage", () => {
         const filterSystem = new FilterSystem();
 
@@ -21,6 +27,9 @@ describe("FilterSystem class", () => {
         expect(result).toBe("Filter Update");
     });
 
+    /**
+     * 測試FilterSystem.setFilterWord是否正確將filterWord設定為foo
+     */ 
     test("Should set the filterWord to foo", () => {
         const filterSystem = mockedSetter(new FilterSystem(), 'filterWord');
 
@@ -29,6 +38,9 @@ describe("FilterSystem class", () => {
         expect(filterSystem._mockVar).toBe('foo');
     });
 
+    /**
+     * 測試FilterSystem.getFilterWord是否正確回傳空字串
+     */ 
     test("Should get an empty string from the filterWord", () => {
         const filterSystem = new FilterSystem();
 
@@ -37,6 +49,9 @@ describe("FilterSystem class", () => {
         expect(filterWord).toBe('');
     });
 
+    /**
+     * 測試FilterSystem.setIgnoreCase是否正確將ignoreCase設定為true
+     */ 
     test("Should set the IgnoreCase to true", () => {
         const filterSystem = mockedSetter(new FilterSystem(), 'ignoreCase');
 
@@ -45,6 +60,9 @@ describe("FilterSystem class", () => {
         expect(filterSystem._mockVar).toBe(true);
     });
 
+    /**
+     * 測試FilterSystem.isIgnoreCase是否正確回傳false
+     */ 
     test("Should get a false from the ignoreCase", () => {
         const filterSystem = new FilterSystem();
 
@@ -53,6 +71,9 @@ describe("FilterSystem class", () => {
         expect(ignoreCase).toBe(false);
     });
 
+    /**
+     * 測試FilterSystem是否正常處裡case sensitive的過濾請求
+     */ 
     test("Should return BookInfo: Game of Thrones II (case sensitive query)", async () => {
         const filterSystem = new FilterSystem();
         const expectedResult = [{
@@ -72,6 +93,9 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
     
+    /**
+     * 測試FilterSystem是否正常處裡case insensitive的過濾請求
+     */ 
     test("Should return BookInfo: Game of Thrones II (case insensitive query)", async () => {
         const filterSystem = new FilterSystem();
         const expectedResult = [{
@@ -91,6 +115,10 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
     
+    /**
+     * 測試若BookInfo List中有含有undefined欄位的BookInfo，
+     * FilterSystem是否正常處裡過濾請求
+     */ 
     test("Should return BookInfo: Game of Thrones II (containing undefined item)", async () => {
         const filterSystem = new FilterSystem();
         const undefinedBookInfo: BookInfo[] = [
@@ -122,6 +150,9 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
 
+    /**
+     * 測試FilterSystem是否正常回傳含有多的符合的結果的過濾請求
+     */ 
     test("Should return BookInfo: Game of Thrones I, Game of Thrones II (multi-result)", async () => {
         const filterSystem = new FilterSystem();
         const expectedResult = [{
@@ -146,6 +177,10 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
 
+    /**
+     * 測試FilterSystem處理的BookInfo List為重複內容的array，
+     * 運作是否正常
+     */
     test("Should return BookInfo: Game of Thrones II (duplicate BookInfo list)", async () => {
         const filterSystem = new FilterSystem();
         const duplicateTestBookInfo = duplicateTestingDataGenerator();
@@ -166,6 +201,10 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
 
+    /**
+     * 測試FilterSystem處理的BookInfo List為稍大的array (4000筆資料)，
+     * 運作是否正常
+     */
     test("Should return BookInfo: Game of Thrones II (large BookInfo list)", async () => {
         const filterSystem = new FilterSystem();
         const largeTestBookInfo = largeTestingDataGenerator();
@@ -186,6 +225,10 @@ describe("FilterSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
 
+    /**
+     * 測試FilterSystem於case sensitivity的模式下過濾存在的書本，filter word
+     * 設定為目標存在書本標題的全小寫，是否未回傳任何結果
+     */
     test("Should return an empty result (case sensitivity)", async () => {
         const filterSystem = new FilterSystem();
 
@@ -199,6 +242,9 @@ describe("FilterSystem class", () => {
         expect(result.length).toBe(0);
     });
     
+    /**
+     * 測試FilterSystem處理控的BookInfo List，是否正確回傳空的array
+     */
     test("Should return an empty result (empty BookInfo list)", async () => {
         const filterSystem = new FilterSystem();
 
@@ -212,6 +258,9 @@ describe("FilterSystem class", () => {
         expect(result.length).toBe(0);
     });
 
+    /**
+     * 測試FilterSystem是否正確處理過濾不存在的書本
+     */ 
     test("Should return an empty result (querying a non-exist book)", async () => {
         const filterSystem = new FilterSystem();
 
@@ -225,6 +274,9 @@ describe("FilterSystem class", () => {
         expect(result.length).toBe(0);
     });
 
+    /**
+     * 測試若設定空白的filter word，FilterSystem是否正常處理過濾請求
+     */ 
     test("Should return the whole BookInfo list (empty filter word)", async () => {
         const filterSystem = new FilterSystem();
 

@@ -5,6 +5,9 @@ import { mockedSetter } from '../__test__/MockSetter'
 import { SortSystem } from './SortSystem'
 
 describe("SortSystem class", () => {
+    /**
+     * 測試若items為空，SortSystem.getItems是否正確回傳空array
+     */
     test("Should get an empty array from the items", () => {
         const sortSystem = new SortSystem();
 
@@ -13,6 +16,9 @@ describe("SortSystem class", () => {
         expect(result).toStrictEqual([]);
     });
 
+    /**
+     * 測試SortSystem.getUpdateMessage是否回傳正確的字串
+     */ 
     test("Should get a sort update msg from the updateMessage", () => {
         const sortSystem = new SortSystem();
 
@@ -21,6 +27,9 @@ describe("SortSystem class", () => {
         expect(result).toBe("Sort Update");
     });
 
+    /**
+     * 測試SortSystem.setSortType是否正確將sortType設為ASC
+     */ 
     test("Should set the sortType to ASC", () => {
         const sortSystem = mockedSetter(new SortSystem(), 'sortType');
 
@@ -29,6 +38,9 @@ describe("SortSystem class", () => {
         expect(sortSystem._mockVar).toBe('ASC');
     });
 
+    /**
+     * 測試SortSystem.setSortType是否正確將sortType設為DESC
+     */
     test("Should set the sortType to DESC", () => {
         const sortSystem = mockedSetter(new SortSystem(), 'sortType');
 
@@ -37,6 +49,10 @@ describe("SortSystem class", () => {
         expect(sortSystem._mockVar).toBe('DESC');
     });
 
+    /**
+     * 測試若SortSystem.setSortType傳入非法的字串 (非ASC或DESC)，是否擲出
+     * It must be ASC or DESC錯誤
+     */
     test("Should throw an error when setting the sortType with an unknown sort type", () => {
         const sortSystem = new SortSystem();
 
@@ -65,6 +81,9 @@ describe("SortSystem class", () => {
     });
     */
 
+    /**
+     * 測試SortSystem.getSortType是否正確回傳ASC
+     */
     test("Should get ASC from the sortType", () => {
         const sortSystem = new SortSystem();
     
@@ -73,6 +92,9 @@ describe("SortSystem class", () => {
         expect(sortType).toBe('ASC');
     });
 
+    /**
+     * 測試SortSystem.process是否正確將BookInfo升冪排序
+     */
     test("Should sort by ascending", async () => {
         const sortSystem = new SortSystem();
 
@@ -86,6 +108,10 @@ describe("SortSystem class", () => {
         expect(result).toStrictEqual(AscendingBookInfo);
     });
 
+    /**
+     * 測試SortSystem.process是否正確將BookInfo升冪排序
+     * (此測試案例使用 partial test oracle)
+     */
     test("Should sort by ascending (partial test oracle)", async () => {
         const sortSystem = new SortSystem();
 
@@ -103,6 +129,9 @@ describe("SortSystem class", () => {
         }
     });
 
+    /**
+     * 測試SortSystem.process是否正確將BookInfo降冪排序
+     */
     test("Should sort by descending", async () => {
         const sortSystem = new SortSystem();
 
@@ -116,6 +145,10 @@ describe("SortSystem class", () => {
         expect(result).toStrictEqual(DescendingBookInfo);
     });
 
+    /**
+     * 測試SortSystem處理的BookInfo List為重複內容的array，
+     * 運作是否正常
+     */
     test("Should sort by descending (duplicate BookInfo array)", async () => {
         const sortSystem = new SortSystem();
         const duplicateTestBookInfo = duplicateTestingDataGenerator();
@@ -135,6 +168,10 @@ describe("SortSystem class", () => {
         expect(result).toStrictEqual(expectedResult);
     });
 
+    /**
+     * 測試SortSystem處理的BookInfo List為稍大的array (4000筆資料)，
+     * 運作是否正常
+     */
     test("Should sort by descending (large BookInfo array)", async () => {
         const sortSystem = new SortSystem();
         const largeTestBookInfo = largeTestingDataGenerator();
@@ -162,6 +199,9 @@ describe("SortSystem class", () => {
         ));
     });
 
+    /**
+     * 測試SortSystem處理的BookInfo List為空，是否正常回傳空array
+     */
     test("Should get an empty result (empty BookInfo array)", async () => {
         const sortSystem = new SortSystem();
 
